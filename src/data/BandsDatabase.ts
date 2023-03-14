@@ -21,14 +21,15 @@ export class BandsDatabase extends BaseDatabase {
         }
     };
 
-    public getBandByName = async (name: string): Promise<Band | null> => {
+    public getBandByNameORId = async (info: string): Promise<Band | null> => {
 
         try {
 
             const result = await this.getConnection()
             .select("*")
             .from(BandsDatabase.TABLE_NAME)
-            .where({name})
+            .where({name: info})
+            .orWhere({id: info})
 
             if (result.length < 1) {
                 return null

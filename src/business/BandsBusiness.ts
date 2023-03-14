@@ -1,7 +1,8 @@
 import { BandsDatabase } from "../data/BandsDatabase";
-import { BandAlreadyRegistered, InvalidMusicGenre, InvalidName, MissingData } from "../errors/BandsErrors";
+import { BaseDatabase } from "../data/BaseDatabase";
+import { BandAlreadyRegistered, BandNotFound, InvalidMusicGenre, InvalidName, MissingData } from "../errors/BandsErrors";
 import { BaseError } from "../errors/BaseError";
-import { BandInputDTO } from "../model/Bands";
+import { Band, BandInputDTO } from "../model/Bands";
 import { IdGenerator } from "../services/idGenerator";
 
 export class BandsBusiness {
@@ -23,7 +24,7 @@ export class BandsBusiness {
             }
 
             const bandsDatabase = new BandsDatabase()
-            const isBandAlreadyRegistered = await bandsDatabase.getBandByName(band.name)
+            const isBandAlreadyRegistered = await bandsDatabase.getBandByNameORId(band.name)
             if (isBandAlreadyRegistered !== null) {
                 throw new BandAlreadyRegistered();
             }
@@ -33,6 +34,37 @@ export class BandsBusiness {
 
             await bandsDatabase.createBand(newId, band.name, band.musicGenre, band.responsible)
     
+        } catch (error:any) {
+            throw new BaseError(error.statusCode, error.message)
+        }
+    };
+
+    public getBandInfo = async (search: any): Promise<Band> => {
+
+        try {
+
+            let searchParameter: string = ""
+
+            if (!search.name && !search.id) {
+                throw new BaseError(400, "Please inform at least one parameter to continue.")
+            }
+
+            if (search.name) {
+                searchParameter = search.name
+            } else {
+                searchParameter = search.id
+            }
+
+
+            const bandsDatabase = new BandsDatabase()
+            const result = await bandsDatabase.getBandByNameORId(searchParameter)
+
+            if (!result) {
+                throw new BandNotFound();
+            }
+
+            return result
+
         } catch (error:any) {
             throw new BaseError(error.statusCode, error.message)
         }

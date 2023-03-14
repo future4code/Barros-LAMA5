@@ -23,3 +23,9 @@ export class BandAlreadyRegistered extends BaseError {
         super(400, "The informed Band name is already registered.")
     }
 };
+
+export class BandNotFound extends BaseError {
+    constructor() {
+        super(400, "No band was found with the informed parameter.")
+    }
+}

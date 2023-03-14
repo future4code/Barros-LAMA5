@@ -24,4 +24,22 @@ export class BandsController {
 
         await BaseDatabase.destroyConnection();
     };
+
+    public getBandInfo = async (req: Request, res: Response) => {
+
+        try {
+            
+            const search = {
+                name: req.body.name,
+                id: req.body.id
+            }
+
+            const bandsBusiness = new BandsBusiness();
+            const result = await bandsBusiness.getBandInfo(search)
+
+            res.status(200).send({result})
+        } catch (error:any) {
+            res.status(400).send({ error: error.message });
+        }
+    }
 }
