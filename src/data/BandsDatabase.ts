@@ -15,7 +15,9 @@ export class BandsDatabase extends BaseDatabase {
         }
 
         try {
-            await this.getConnection().insert(newBand).into(BandsDatabase.TABLE_NAME)
+            await this.getConnection()
+            .insert(newBand)
+            .into(BandsDatabase.TABLE_NAME)
         } catch (error:any) {
             throw new Error(error.sqlMessage || error.message);
         }
