@@ -1,4 +1,5 @@
 import { Show } from "../model/Show";
+import { BandsDatabase } from "./BandsDatabase";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class ShowsDatabase extends BaseDatabase {
@@ -26,13 +27,12 @@ export class ShowsDatabase extends BaseDatabase {
         }
     };
 
-    public getShowsList = async (input: string): Promise<Show[]> => {
+    public getAllShows = async (): Promise<Show[]> => {
         try {
             
             const shows = await this.getConnection()
             .select("*")
             .from(ShowsDatabase.TABLE_NAME)
-            .where({week_day: input})
 
             const allShows: Show[] = []
 
@@ -54,6 +54,37 @@ export class ShowsDatabase extends BaseDatabase {
         } catch (error:any) {
             throw new Error(error.sqlMessage || error.message);
         }
-    }
-    
+    };
+
+    public getShowsByDay = async (input: string): Promise<Object> => {
+        try {
+            const showsByDay = await this.getConnection()
+            .select("*")
+            .from(ShowsDatabase.TABLE_NAME)
+            .where({week_day: input})
+            .orderBy("LAMA_Shows.start_time")
+
+            const bandsList: any = {
+                weekDay: input.toUpperCase(),
+                shows: []
+            }
+
+            const bandsDatabase = new BandsDatabase()
+
+            for (let i = 0; i < showsByDay.length; i++) {
+                const band = await bandsDatabase.getBandByNameORId(showsByDay[i].band_id)
+                bandsList.shows.push({
+                    bandName: band?.getName(),
+                    musicGenre: band?.getMusicGenre(),
+                    startTime: showsByDay[i].start_time,
+                    endTime: showsByDay[i].end_time
+                })
+            }
+
+            return bandsList
+            
+        } catch (error: any) {
+            throw new Error(error.sqlMessage || error.message);
+        }
+    }    
 }
