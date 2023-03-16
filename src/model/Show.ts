@@ -77,3 +77,15 @@ export enum WeekDay {
     SATURDAY = "SATURDAY",
     SUNDAY = "SUNDAY"
 };
+
+export interface ShowDayOutputDTO {
+    weekDay: string,
+    shows: ShowListDTO[]
+}
+
+export interface ShowListDTO {
+    bandName: string | undefined,
+    musicGenre: string | undefined,
+    startTime: number,
+    endTime: number
+}

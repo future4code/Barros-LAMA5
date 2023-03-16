@@ -2,7 +2,7 @@ import { BandsDatabase } from "../data/BandsDatabase";
 import { ShowsDatabase } from "../data/ShowsDatabase";
 import { BaseError } from "../errors/BaseError";
 import { BandNotFound, InvalidEndTime, InvalidStartTime, InvalidWeekDay, MissingData } from "../errors/ShowsErrors";
-import { ShowInputDTO } from "../model/Show";
+import { ShowDayOutputDTO, ShowInputDTO } from "../model/Show";
 import { IdGenerator } from "../services/idGenerator";
 
 export class ShowsBusiness {
@@ -61,10 +61,21 @@ export class ShowsBusiness {
         }
     };
 
-    public getShowsByDay = async (input: string): Promise<Object> => {
+    public getShowsByDay = async (input: string): Promise<ShowDayOutputDTO> => {
         try {
+
+            if (!input || input === ":weekDay" || (input.toUpperCase() !== "FRIDAY" 
+            && input.toUpperCase() !== "SATURDAY" 
+            && input.toUpperCase() !== "SUNDAY")) {
+                throw new InvalidWeekDay();
+            }
+
             const showsDatabase = new ShowsDatabase()
             const result = await showsDatabase.getShowsByDay(input)
+
+            if (result.shows.length < 1) {
+                throw new BaseError(400, "No shows confirmed for this day yet.")
+            }
 
             return result
         } catch (error:any) {
