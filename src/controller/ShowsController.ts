@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
 import { ShowsBusiness } from "../business/ShowsBusiness";
 import { ShowInputDTO } from "../model/Show";
+import { Authenticator } from "../services/Authenticator";
 
 export class ShowsController {
     
     public addShow = async (req: Request, res: Response): Promise<void> => {
         try {
+
+            const userToken = req.headers.authorization as string
+
             const input: ShowInputDTO = {
                 weekDay: req.body.weekDay,
                 startTime: req.body.startTime,
@@ -13,8 +17,11 @@ export class ShowsController {
                 bandId: req.body.bandId
             }
 
+            const authenticator = new Authenticator();
+            const user = authenticator.getData(userToken)
+
             const showsBusiness = new ShowsBusiness();
-            await showsBusiness.addShow(input)
+            await showsBusiness.addShow(user.role, input)
 
             res.status(200).send({message: "Show added successfully!"})
         } catch (error:any) {
