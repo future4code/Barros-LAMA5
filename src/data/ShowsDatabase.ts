@@ -1,4 +1,4 @@
-import { Show } from "../model/Show";
+import { Show, ShowDayOutputDTO } from "../model/Show";
 import { BandsDatabase } from "./BandsDatabase";
 import { BaseDatabase } from "./BaseDatabase";
 
@@ -56,7 +56,7 @@ export class ShowsDatabase extends BaseDatabase {
         }
     };
 
-    public getShowsByDay = async (input: string): Promise<Object> => {
+    public getShowsByDay = async (input: string): Promise<ShowDayOutputDTO> => {
         try {
             const showsByDay = await this.getConnection()
             .select("*")
@@ -64,7 +64,7 @@ export class ShowsDatabase extends BaseDatabase {
             .where({week_day: input})
             .orderBy("LAMA_Shows.start_time")
 
-            const bandsList: any = {
+            const bandsList: ShowDayOutputDTO = {
                 weekDay: input.toUpperCase(),
                 shows: []
             }
