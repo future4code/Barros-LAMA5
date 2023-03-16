@@ -2,10 +2,13 @@ import { Request, Response } from "express";
 import { BandsBusiness } from "../business/BandsBusiness";
 import { BaseDatabase } from "../data/BaseDatabase";
 import { BandInputDTO } from "../model/Bands";
+import { Authenticator } from "../services/Authenticator";
 
 export class BandsController {
    public registerBand = async (req: Request, res: Response) => {
         try {
+
+            const userToken = req.headers.authorization as string
 
             const input: BandInputDTO = {
                 name: req.body.name,
@@ -13,8 +16,11 @@ export class BandsController {
                 responsible: req.body.responsible
             }
 
+            const authenticator = new Authenticator()
+            const user = authenticator.getData(userToken)
+
             const bandsBusiness = new BandsBusiness();
-            await bandsBusiness.createBand(input)
+            await bandsBusiness.createBand(user.role, input)
 
             res.status(200).send({ message: "Band registered!" });
 

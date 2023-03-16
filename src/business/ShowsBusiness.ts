@@ -2,13 +2,18 @@ import { BandsDatabase } from "../data/BandsDatabase";
 import { ShowsDatabase } from "../data/ShowsDatabase";
 import { BaseError } from "../errors/BaseError";
 import { BandNotFound, InvalidEndTime, InvalidStartTime, InvalidWeekDay, MissingData } from "../errors/ShowsErrors";
+import { Unauthorized } from "../errors/UserErrors";
 import { ShowDayOutputDTO, ShowInputDTO } from "../model/Show";
 import { IdGenerator } from "../services/idGenerator";
 
 export class ShowsBusiness {
 
-    public addShow = async(show: ShowInputDTO): Promise<void> => {
+    public addShow = async(role: string, show: ShowInputDTO): Promise<void> => {
         try {
+
+            if (role !== "ADMIN") {
+                throw new Unauthorized();
+            }
 
             if (!show.weekDay && !show.startTime && !show.endTime && !show.bandId) {
                 throw new MissingData();

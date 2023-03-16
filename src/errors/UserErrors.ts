@@ -56,6 +56,6 @@ export class WrongPassword extends BaseError {
 
 export class Unauthorized extends BaseError {
     constructor() {
-        super(404, "Inform a valid token to continue.")
+        super(404, "You must be an 'ADMIN' user to continue.")
     }
 };

@@ -2,14 +2,19 @@ import { BandsDatabase } from "../data/BandsDatabase";
 import { BaseDatabase } from "../data/BaseDatabase";
 import { BandAlreadyRegistered, BandNotFound, InvalidMusicGenre, InvalidName, MissingData } from "../errors/BandsErrors";
 import { BaseError } from "../errors/BaseError";
+import { Unauthorized } from "../errors/UserErrors";
 import { Band, BandInputDTO } from "../model/Bands";
 import { IdGenerator } from "../services/idGenerator";
 
 export class BandsBusiness {
 
-    public createBand = async (band: BandInputDTO): Promise<void> => {
+    public createBand = async (role: string, band: BandInputDTO): Promise<void> => {
 
         try {
+
+            if (role !== "ADMIN") {
+                throw new Unauthorized();
+            }
 
             if (!band.name && !band.musicGenre && !band.responsible) {
                 throw new MissingData()
@@ -68,5 +73,5 @@ export class BandsBusiness {
         } catch (error:any) {
             throw new BaseError(error.statusCode, error.message)
         }
-    }
+    };
 }
