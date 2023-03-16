@@ -33,14 +33,14 @@ export class ShowsBusiness {
             }
 
             const showsDatabase = new ShowsDatabase();
-            const showsList = await showsDatabase.getShowsList(show.weekDay)
+            const showsList = await showsDatabase.getAllShows()
 
             for (let i = 0; i < showsList.length; i++) {
-                if (showsList[i].getStartTime() === show.startTime) {
+                if (showsList[i].getWeekDay() === show.weekDay.toUpperCase() && showsList[i].getStartTime() === show.startTime) {
                     throw new BaseError(400, "There is already a booked show for this time on this day.")
                 }
 
-                if (showsList[i].getEndTime() === show.endTime) {
+                if (showsList[i].getWeekDay() === show.weekDay.toUpperCase() && showsList[i].getEndTime() === show.endTime) {
                     throw new BaseError(400, "There is already a booked show for this time on this day.")
                 }
             }
@@ -56,6 +56,17 @@ export class ShowsBusiness {
 
             await showsDatabase.addShow(id, show.weekDay, show.startTime, show.endTime, show.bandId)
 
+        } catch (error:any) {
+            throw new BaseError(error.statusCode, error.message)
+        }
+    };
+
+    public getShowsByDay = async (input: string): Promise<Object> => {
+        try {
+            const showsDatabase = new ShowsDatabase()
+            const result = await showsDatabase.getShowsByDay(input)
+
+            return result
         } catch (error:any) {
             throw new BaseError(error.statusCode, error.message)
         }
