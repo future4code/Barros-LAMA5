@@ -43,10 +43,9 @@ export class ShowsDatabase extends BaseDatabase {
                     startTime: shows[i].start_time, 
                     endTime: shows[i].end_time, 
                     bandId: shows[i].band_id
-
                 }
                 
-                allShows.push(...allShows, Show.toShowsModel(thisShow))
+                allShows.push(Show.toShowsModel(thisShow))
             }
 
             return allShows
@@ -86,5 +85,30 @@ export class ShowsDatabase extends BaseDatabase {
         } catch (error: any) {
             throw new Error(error.sqlMessage || error.message);
         }
-    }    
+    };
+
+    public getShowByID = async (input: string): Promise<Show | null> => {
+        try {
+            const result = await this.getConnection()
+            .select('*')
+            .from(ShowsDatabase.TABLE_NAME)
+            .where({id: input})
+
+            const thisShow = {
+                id: result[0].id,
+                weekDay: result[0].week_day, 
+                startTime: result[0].start_time, 
+                endTime: result[0].end_time, 
+                bandId: result[0].band_id
+            }
+
+            if (result.length < 1) {
+                return null
+            }
+
+            return Show.toShowsModel(thisShow)
+        } catch (error:any) {
+            throw new Error(error.sqlMessage || error.message);
+        }
+    }
 }

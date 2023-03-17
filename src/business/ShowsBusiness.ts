@@ -3,7 +3,7 @@ import { ShowsDatabase } from "../data/ShowsDatabase";
 import { BaseError } from "../errors/BaseError";
 import { BandNotFound, InvalidEndTime, InvalidStartTime, InvalidWeekDay, MissingData } from "../errors/ShowsErrors";
 import { Unauthorized } from "../errors/UserErrors";
-import { ShowDayOutputDTO, ShowInputDTO } from "../model/Show";
+import { Show, ShowDayOutputDTO, ShowInputDTO } from "../model/Show";
 import { IdGenerator } from "../services/idGenerator";
 
 export class ShowsBusiness {
@@ -81,6 +81,17 @@ export class ShowsBusiness {
             if (result.shows.length < 1) {
                 throw new BaseError(400, "No shows confirmed for this day yet.")
             }
+
+            return result
+        } catch (error:any) {
+            throw new BaseError(error.statusCode, error.message)
+        }
+    };
+
+    getAllShows = async(): Promise<Show[]> => {
+        try {
+            const showsDatabase = new ShowsDatabase();
+            const result = await showsDatabase.getAllShows()
 
             return result
         } catch (error:any) {

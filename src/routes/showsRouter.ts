@@ -6,3 +6,4 @@ const showsController = new ShowsController();
 
 showsRouter.post("/add", showsController.addShow)
 showsRouter.get("/:weekDay", showsController.getShowsByDay)
+showsRouter.get("/", showsController.getAllShows)
