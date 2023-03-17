@@ -5,7 +5,7 @@ export class Tickets {
     private price: number,
     private quantity: number,
     private showId: string,
-    private sold: string
+    private sold: number
     ) {}
 
     getId() {
@@ -52,7 +52,7 @@ export class Tickets {
         this.showId = showId;
     };
 
-    setSold(sold: string) {
+    setSold(sold: number) {
         this.sold = sold
     }
 
@@ -67,13 +67,3 @@ export interface TicketInputDTO {
     quantity: number,
     showId: string
 };
-
-export interface TicketOutputDTO {
-    id: string,
-    price: number,
-    bandName: string | undefined,
-    musicGenre: string | undefined,
-    weekDay: string,
-    startTime: number,
-    endTime: number
-}

@@ -52,4 +52,56 @@ export class TicketsDatabase extends BaseDatabase {
             throw new Error(error.sqlMessage || error.message);
         }
     };
+
+    getTicketsByName = async(name: string): Promise<Tickets | null> => {
+        try {
+            
+            const ticket = await this.getConnection()
+            .select("*")
+            .from(TicketsDatabase.TABLE_NAME)
+            .where({name})
+
+            const thisTicket = {
+                id: ticket[0].id,
+                name: ticket[0].name, 
+                price: ticket[0].price, 
+                quantity: ticket[0].quantity,
+                showId: ticket[0].show_id,
+                sold: ticket[0].sold
+            }
+
+            if (ticket.length < 1 ) {
+                return null
+            }
+                
+            return Tickets.toTicketsModel(thisTicket)
+
+        } catch (error:any) {
+            throw new Error(error.sqlMessage || error.message);
+        }
+    }
+
+    sellTicket = async(ticketsId: string, soldTicketsId: string, quantity: number, newQty: number, newSold: number): Promise<void> => {
+        try {
+
+            await this.getConnection()
+            .from(TicketsDatabase.TABLE_NAME)
+            .update({quantity: newQty})
+            .update({sold: newSold})
+            .where({id: ticketsId})
+
+            const newTickets = {
+                id: soldTicketsId,
+                tickets_id: ticketsId,
+                quantity: quantity
+            }
+
+            await this.getConnection()
+            .insert(newTickets)
+            .into("LAMA_Sold_Tickets")
+
+        } catch (error:any) {
+            throw new Error(error.sqlMessage || error.message);
+        }
+    };
 }

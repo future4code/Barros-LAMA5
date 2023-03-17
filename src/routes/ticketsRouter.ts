@@ -7,3 +7,4 @@ const ticketsController = new TicketsController();
 
 ticketsRouter.post("/register", ticketsController.registerTickets)
 ticketsRouter.get("/", ticketsController.getAllTickets)
+ticketsRouter.post("/purchase", ticketsController.purchaseTicket)

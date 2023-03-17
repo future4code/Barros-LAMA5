@@ -32,3 +32,10 @@ CREATE TABLE IF NOT EXISTS LAMA_Tickets (
   show_id VARCHAR(255) NOT NULL,
   FOREIGN KEY(show_id) REFERENCES LAMA_Shows(id)
 );
+
+CREATE TABLE IF NOT EXISTS LAMA_Sold_Tickets (
+  id VARCHAR(255) PRIMARY KEY,
+  tickets_id VARCHAR(255) NOT NULL,
+  quantity INT NOT NULL,
+  FOREIGN KEY(tickets_id) REFERENCES LAMA_Tickets(id)
+);

@@ -38,5 +38,21 @@ export class TicketsController {
         } catch (error:any) {
             res.status(400).send({ error: error.message });
         }
+    };
+
+    public purchaseTicket = async (req: Request, res: Response) => {
+        try {
+
+            const eventName = req.body.eventName
+            const quantity = req.body.quantity
+
+            const ticketsBusiness = new TicketsBusiness();
+            await ticketsBusiness.purchaseTicket(eventName, quantity)
+
+            res.status(200).send({message: "Tickets purchased!"})
+
+        } catch (error:any) {
+           res.status(400).send({ error: error.message });  
+        }
     }
 };

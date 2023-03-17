@@ -67,5 +67,39 @@ export class TicketsBusiness {
         } catch (error:any) {
             throw new BaseError(error.statusCode, error.message)
         };
+    };
+
+    purchaseTicket = async(event: string, quantity: number): Promise<void> => {
+        try {
+            if (!event) {
+                throw new BaseError(400, "Please inform the event.")
+            }
+
+            if (isNaN(quantity) || !Number.isInteger(quantity)) {
+                throw new InvalidQuantity();
+            }
+
+            const ticketsDatabase = new TicketsDatabase();
+            const getEvent = await ticketsDatabase.getTicketsByName(event)
+
+            if (getEvent === null) {
+                throw new BaseError(400, 'No tickets found for this event.')
+            }
+
+            if (getEvent.getQuantity() < quantity) {
+                throw new BaseError(400, 'Purchase exceeds the quantity available..')
+            }
+
+            const newQty: number = getEvent.getQuantity() - quantity
+            const newSold: number = getEvent.getSold() + quantity
+
+            const idGenerator = new IdGenerator();
+            const soldTicketsId = idGenerator.generate()
+
+            await ticketsDatabase.sellTicket(getEvent.getId(), soldTicketsId, quantity, newQty, newSold)
+
+        } catch (error:any) {
+            throw new BaseError(error.statusCode, error.message)
+        }
     }
 }
