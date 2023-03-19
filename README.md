@@ -23,6 +23,7 @@ API REST that uses SQL Database to create a system for a musical event/festival,
 <li> Get All Tickets </li></ul>
 
 <h1>:page_with_curl: Documentation</h1>
+https://documenter.getpostman.com/view/25676072/2s93JzMgXW
 
 <h1>:computer: Running the Project</h1>
 
